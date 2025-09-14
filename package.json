@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@mentra/sdk": "latest",
+    "axios": "^1.12.2",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongodb": "^6.19.0",
