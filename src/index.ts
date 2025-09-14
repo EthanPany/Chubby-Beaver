@@ -2,6 +2,7 @@ import { ToolCall, AppServer, AppSession } from '@mentra/sdk';
 import path from 'path';
 import { setupExpressRoutes } from './webview';
 import { handleToolCall } from './tools';
+import { getDirections, geocode, reverseGeocode} from './mapsss'
 
 const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKAGE_NAME is not set in .env file'); })();
 const MENTRAOS_API_KEY = process.env.MENTRAOS_API_KEY ?? (() => { throw new Error('MENTRAOS_API_KEY is not set in .env file'); })();
@@ -45,15 +46,30 @@ class ExampleMentraOSApp extends AppServer {
     // Show welcome message
     session.layouts.showTextWall("Example App loaded!");
 
+    // Subscribe to location updates using the events manager
+    session.events.onLocation((data) => {
+      console.log(`location: ${data.lat}, ${data.lng}`);
+      // Update location-based features
+      const place = "Great Dome"
+      const curr = reverseGeocode(data.lat, data.lng)
+      curr.then(name => session.layouts.showTextWall(`You are currently at ${name}`))
+
+      const dir = getDirections(data.lat, data.lng, place);
+      //session.layouts.showTextWall(`location: ${data.lat}, ${data.lng}`);
+      dir.then(name => session.layouts.showTextWall(`Going to ${place}, Directions: ${name}`))
+      //session.layouts.showTextWall(`location: ${data.lat}, ${data.lng}`);
+    });
+
     /**
      * Handles transcription display based on settings
      * @param text - The transcription text to display
      */
     const displayTranscription = (text: string): void => {
       const showLiveTranscription = session.settings.get<boolean>('show_live_transcription', true);
-      if (showLiveTranscription) {
+      if (!showLiveTranscription) { //reverse
         console.log("Transcript received:", text);
         session.layouts.showTextWall("You said: " + text);
+
       }
     };
 

@@ -11,7 +11,8 @@ const CAMPUS_POIS = {
   "library": { latitude: 42.3653, longitude: -71.0906 },
   "cafe": { latitude: 42.3622, longitude: -71.0898 },
   "gym": { latitude: 42.3592, longitude: -71.0924 },
-  "main_gate": { latitude: 42.3597, longitude: -71.0928 }
+  "main_gate": { latitude: 42.3597, longitude: -71.0928 },
+  "Great Dome": { latitude: 42.3597, longitude: -71.0921 }
 };
 // 3 functions: getDirections, go from #s to address, address to #s
 // need to get location, using mentra api!!!
@@ -128,3 +129,24 @@ export async function geocode(
     throw new Error(`Failed to perform geocode: ${error}`);
   }
 }
+
+export async function textDirections(
+  latitude: number,
+  longitude: number,
+  destination: keyof typeof CAMPUS_POIS
+): Promise<string> {
+
+  const dir = getDirections(latitude, longitude, destination)
+  return `Going to ${destination}, Directions: ${dir}`
+
+}
+
+export async function textDescription(
+  destination: keyof typeof CAMPUS_POIS
+): Promise<string> {
+
+  
+  return `Here is ${destination}, `
+
+}
+

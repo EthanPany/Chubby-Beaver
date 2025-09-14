@@ -2,6 +2,9 @@
   "permissions": {
     "additionalDirectories": [
       "/Users/panyiyang/code/hackMIT/gyro"
+    ],
+    "allow": [
+      "WebSearch"
     ]
   }
 }
