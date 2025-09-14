@@ -46,6 +46,13 @@ class ExampleMentraOSApp extends AppServer {
     // Show welcome message
     session.layouts.showTextWall("Example App loaded!");
 
+    // Subscribe to location updates using the events manager
+    session.events.onLocation((data) => {
+      console.log(`location: ${data.lat}, ${data.lng}`);
+      // Update location-based features
+      session.layouts.showTextWall(`New location: ${data.lat}, ${data.lng}`);
+    });
+
     /**
      * Handles transcription display based on settings
      * @param text - The transcription text to display
@@ -55,14 +62,7 @@ class ExampleMentraOSApp extends AppServer {
       if (showLiveTranscription) {
         console.log("Transcript received:", text);
         session.layouts.showTextWall("You said: " + text);
-        const location = session.location.subscribeToStream({ accuracy: 'high' }, (data) => {
-          console.log(`location: ${data.lat}, ${data.lng}`);
-          // Update location-based features
-          session.layouts.showTextWall(`New location: ${data.lat}, ${data.lng}`);
-        });
       }
-      
-
     };
 
     // Listen for transcriptions
