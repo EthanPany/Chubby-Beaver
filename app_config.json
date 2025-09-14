@@ -4,6 +4,10 @@
     {
       "type": "MICROPHONE",
       "description": "To show transcriptions"
+    },
+    {
+      "type": "LOCATION",
+      "description": "Used to provide current location for maps"
     }
   ],
   "settings": [
