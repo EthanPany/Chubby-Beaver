@@ -19,7 +19,7 @@ ws.on("open", () => {
       type: "session.update",
       session: {
         instructions: "You are a helpful assistant. When you hear audio input, respond conversationally.",
-        modalities: ["audio", "text"], // Enable audio input and output
+        modalities: ["audio", "text"], // enable audio input and output
         voice: "alloy",
         output_audio_format: "pcm16",
         input_audio_format: "pcm16", // input format
@@ -31,7 +31,7 @@ ws.on("open", () => {
   );
 });
 
-// Enhanced message handler
+// Message handler
 ws.on("message", (message: WebSocket.RawData) => {
   try {
     const event = JSON.parse(message.toString()) as Record<string, unknown>;
@@ -48,7 +48,7 @@ ws.on("message", (message: WebSocket.RawData) => {
 
       case "input_audio_buffer.speech_stopped":
         console.log("User stopped speaking, processing...");
-        // Automatically commit the audio and generate response
+        // Commit audio and generate response
         ws.send(JSON.stringify({
           type: "input_audio_buffer.commit"
         }));
@@ -63,12 +63,11 @@ ws.on("message", (message: WebSocket.RawData) => {
         break;
 
       case "response.audio.delta":
-        // This is the audio response - you can play this
+        // Audio response
         const audioData = event.delta as string;
         if (audioData) {
           const audioBuffer = Buffer.from(audioData, 'base64');
-          console.log(`Received audio chunk: ${audioBuffer.length} bytes`);
-          // TODO: Play this audio buffer through your speakers
+          console.log(`Received audio chunk: ${audioBuffer.length} bytes`);  //might need to play audio buffer through speaker (once mic is added)
         }
         break;
 
@@ -110,7 +109,7 @@ export function sendAudioData(audioBuffer: Buffer) {
   }
 }
 
-// function if manual triggering required
+// Function if manual triggering required
 export function triggerResponse() {
   if (ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({
@@ -122,7 +121,7 @@ export function triggerResponse() {
   }
 }
 
-// testing with text
+// Testing with text
 export function sendTextMessage(text: string) {
   if (ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({
