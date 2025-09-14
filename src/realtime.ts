@@ -13,18 +13,18 @@ const ws = new WebSocket(url, {
 ws.on("open", () => {
   console.log("Connected to server.");
 
-  // Enhanced session config for audio detection
+  // session config for audio detection
   ws.send(
     JSON.stringify({
       type: "session.update",
       session: {
         instructions: "You are a helpful assistant. When you hear audio input, respond conversationally.",
-        modalities: ["audio", "text"], // Enable both audio input and output
+        modalities: ["audio", "text"], // Enable audio input and output
         voice: "alloy",
         output_audio_format: "pcm16",
-        input_audio_format: "pcm16", // Specify input format
+        input_audio_format: "pcm16", // input format
         input_audio_transcription: {
-          model: "whisper-1" // Enable transcription
+          model: "whisper-1" // transcription enabled
         }
       },
     })
@@ -35,19 +35,19 @@ ws.on("open", () => {
 ws.on("message", (message: WebSocket.RawData) => {
   try {
     const event = JSON.parse(message.toString()) as Record<string, unknown>;
-    console.log("📨 Received event:", event.type);
+    console.log("Received event:", event.type);
 
     switch (event.type) {
       case "session.created":
-        console.log("✅ Session created, ready for audio!");
+        console.log("Session created, ready for audio!");
         break;
 
       case "input_audio_buffer.speech_started":
-        console.log("🎤 User started speaking...");
+        console.log("User started speaking...");
         break;
 
       case "input_audio_buffer.speech_stopped":
-        console.log("🔇 User stopped speaking, processing...");
+        console.log("User stopped speaking, processing...");
         // Automatically commit the audio and generate response
         ws.send(JSON.stringify({
           type: "input_audio_buffer.commit"
@@ -59,7 +59,7 @@ ws.on("message", (message: WebSocket.RawData) => {
 
       case "conversation.item.input_audio_transcription.completed":
         const transcription = event.transcript as string;
-        console.log("📝 Transcription:", transcription);
+        console.log("Transcription:", transcription);
         break;
 
       case "response.audio.delta":
@@ -67,7 +67,7 @@ ws.on("message", (message: WebSocket.RawData) => {
         const audioData = event.delta as string;
         if (audioData) {
           const audioBuffer = Buffer.from(audioData, 'base64');
-          console.log(`🔊 Received audio chunk: ${audioBuffer.length} bytes`);
+          console.log(`Received audio chunk: ${audioBuffer.length} bytes`);
           // TODO: Play this audio buffer through your speakers
         }
         break;
@@ -76,16 +76,16 @@ ws.on("message", (message: WebSocket.RawData) => {
         // Text version of the response
         const textDelta = event.delta as string;
         if (textDelta) {
-          process.stdout.write(textDelta); // Print response in real-time
+          process.stdout.write(textDelta); // print response in real-time
         }
         break;
 
       case "response.done":
-        console.log("\n✅ Response complete!");
+        console.log("\nResponse complete!");
         break;
 
       case "error":
-        console.error("❌ Error:", event.error);
+        console.error("Error:", event.error);
         break;
     }
   } catch (e) {
@@ -97,7 +97,7 @@ ws.on("error", (err) => {
   console.error("WebSocket error:", err);
 });
 
-// Function to send audio data (call this when you have audio from microphone)
+// Function sends audio data (might need this for mic)
 export function sendAudioData(audioBuffer: Buffer) {
   if (ws.readyState === WebSocket.OPEN) {
     const base64Audio = audioBuffer.toString('base64');
@@ -106,11 +106,11 @@ export function sendAudioData(audioBuffer: Buffer) {
       audio: base64Audio
     }));
   } else {
-    console.warn("⚠️ WebSocket not open, cannot send audio");
+    console.warn("WebSocket not open, cannot send audio");
   }
 }
 
-// Function to manually trigger a response (optional)
+// function if manual triggering required
 export function triggerResponse() {
   if (ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({
@@ -122,7 +122,7 @@ export function triggerResponse() {
   }
 }
 
-// Function to send text message (for testing)
+// testing with text
 export function sendTextMessage(text: string) {
   if (ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({
