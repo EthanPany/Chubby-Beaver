@@ -1,0 +1,9 @@
+# Podfile for AirPods Motion Streaming
+
+platform :ios, '14.0'
+use_frameworks!
+
+target 'AirPodsProMotion' do
+  # WebSocket client for iOS
+  pod 'Starscream', '~> 4.0'
+end
