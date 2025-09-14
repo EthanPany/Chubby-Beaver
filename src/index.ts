@@ -52,16 +52,7 @@ class ExampleMentraOSApp extends AppServer {
       // Update location-based features
       session.layouts.showTextWall(`New location: ${data.lat}, ${data.lng}`);
     });
-    // Alternative 1: Using onLocationUpdate
-    session.events.onLocationUpdate((data) => {
-      console.log(`User is at: ${data.lat}, ${data.lng}`);
-    });
 
-    // Alternative 2: Using generic event subscription
-    import { StreamType } from '@mentra/sdk';
-    session.events.on(StreamType.LOCATION_UPDATE, (data) => {
-      console.log(`Location update: ${data.lat}, ${data.lng}`);
-    });
 
     /**
      * Handles transcription display based on settings

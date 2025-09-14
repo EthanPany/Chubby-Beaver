@@ -1,0 +1,36 @@
+{
+  "name": "app1",
+  "description": "A extended example app that shows how to use MentraOS.",
+  "onboardingInstructions": "",
+  "publicUrl": "https://ripply-rheumatically-madison.ngrok-free.app",
+  "logoURL": "https://imagedelivery.net/nrc8B2Lk8UIoyW7fY8uHVg/933c6506-b312-4c1c-ec95-36b028540e00/square",
+  "appType": "background",
+  "permissions": [
+    {
+      "type": "MICROPHONE",
+      "description": "To show transcriptions"
+    },
+    {
+      "type": "LOCATION",
+      "description": "Used to provide current location for maps"
+    }
+  ],
+  "settings": [
+    {
+      "type": "toggle",
+      "key": "show_live_transcription",
+      "label": "Show live transcription",
+      "defaultValue": true
+    }
+  ],
+  "tools": [
+    {
+      "id": "my_tool_name",
+      "description": "This is a tool that does something.",
+      "activationPhrases": [
+        "my tool name",
+        "use my tool"
+      ]
+    }
+  ]
+}
