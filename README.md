@@ -1,4 +1,6 @@
-# MentraOS-Extended-Example-App
+# Chubby Beaver - MIT AI Tour Guide Smart Glass App
+
+
 
 ### Install MentraOS on your phone
 
