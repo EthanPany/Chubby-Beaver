@@ -3,7 +3,7 @@ import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import { getState, reset } from './state.js';
 import { getNextSpot } from './llm.js';
-import { resolvePlaceIfNeeded, getDirections } from '../../../HackMIT2025/maps.js';
+import { resolvePlaceIfNeeded, getDirections } from './maps.js';
 
 const app = express();
 app.use(express.json());

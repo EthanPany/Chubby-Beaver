@@ -11,3 +11,6 @@ bun.lock
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log* 
+#hide google api
+mentra-next-spot/src/.env
+#mentra-next-spot/src/map.py
