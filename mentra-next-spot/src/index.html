@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Campus Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #0F0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hud-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .hud-text {
+            text-shadow: 0 0 5px #0F0;
+        }
+        .hud-box {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #0F0;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+        .blinking-cursor {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            from, to {
+                color: transparent;
+            }
+            50% {
+                color: #0F0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-green-400 font-mono">
+    <div class="hud-container">
+        <!-- Top Left Corner: Location Info -->
+        <div class="hud-box absolute top-4 left-4 p-4 text-sm hud-text">
+            <p id="addressDisplay">Address: Loading...</p>
+            <p id="coordsDisplay">LAT: Loading... | LON: Loading...</p>
+            <p id="timeDisplay">Time: Loading...</p>
+        </div>
+
+        <!-- Center: Main HUD -->
+        <div class="flex-grow flex flex-col justify-center items-center text-center px-4">
+            <h1 id="hudTitle" class="text-3xl font-bold mb-4 hud-text">AI Campus Guide</h1>
+            <div id="mainDisplay" class="hud-box p-6 min-w-[300px] max-w-sm">
+                <p id="directionText" class="text-lg">Location found, ready to guide<span class="blinking-cursor">_</span></p>
+            </div>
+        </div>
+
+        <!-- Bottom: Control Buttons -->
+        <div class="w-full flex justify-center space-x-4 mb-4">
+            <button onclick="requestDirections('library')" class="hud-box bg-green-900 hover:bg-green-700 transition-colors py-2 px-4 rounded-md text-sm hud-text">Go to Library</button>
+            <button onclick="requestDirections('cafe')" class="hud-box bg-green-900 hover:bg-green-700 transition-colors py-2 px-4 rounded-md text-sm hud-text">Go to Cafe</button>
+            <button onclick="requestDirections('gym')" class="hud-box bg-green-900 hover:bg-green-700 transition-colors py-2 px-4 rounded-md text-sm hud-text">Go to Gym</button>
+            <button onclick="requestDirections('main_gate')" class="hud-box bg-green-900 hover:bg-green-700 transition-colors py-2 px-4 rounded-md text-sm hud-text">Go to Main Gate</button>
+        </div>
+    </div>
+
+    <script>
+        const apiEndpoint = `http://127.0.0.1:5001`;
+
+        let currentLatitude = null;
+        let currentLongitude = null;
+        let previousLatitude = null;
+        let previousLongitude = null;
+
+        function getGeolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(
+                    (position) => {
+                        const newLatitude = position.coords.latitude;
+                        const newLongitude = position.coords.longitude;
+                        
+                        if (newLatitude !== currentLatitude || newLongitude !== currentLongitude) {
+                            // Update previous location before updating current one
+                            previousLatitude = currentLatitude;
+                            previousLongitude = currentLongitude;
+                            currentLatitude = newLatitude;
+                            currentLongitude = newLongitude;
+
+                            updateLocationUI();
+                        }
+                    },
+                    (error) => {
+                        console.error('Geolocation error:', error);
+                        document.getElementById('directionText').textContent = 'Location access denied. Please enable location services.';
+                    }, {
+                        enableHighAccuracy: true,
+                        maximumAge: 0,
+                        timeout: 5000 // 5 seconds
+                    }
+                );
+            } else {
+                document.getElementById('directionText').textContent = 'Geolocation is not supported by this browser.';
+            }
+        }
+
+        async function updateLocationUI() {
+            const coordsDisplay = document.getElementById('coordsDisplay');
+            coordsDisplay.textContent = `LAT: ${currentLatitude.toFixed(6)} | LON: ${currentLongitude.toFixed(6)}`;
+            
+            const timeDisplay = document.getElementById('timeDisplay');
+            timeDisplay.textContent = `Time: ${new Date().toLocaleTimeString()}`;
+
+            await findMyAddress();
+        }
+
+        async function requestDirections(destination) {
+            const directionText = document.getElementById('directionText');
+            if (currentLatitude === null || currentLongitude === null) {
+                directionText.textContent = 'Acquiring location... Please wait.';
+                return;
+            }
+            
+            directionText.textContent = `Getting directions to ${destination}...`;
+
+            try {
+                const response = await fetch(`${apiEndpoint}/get_directions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        latitude: currentLatitude,
+                        longitude: currentLongitude,
+                        previous_latitude: previousLatitude,
+                        previous_longitude: previousLongitude,
+                        destination: destination
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    directionText.textContent = data.message;
+                } else {
+                    const errorData = await response.json();
+                    directionText.textContent = `Error: ${errorData.error}`;
+                    console.error('Server error:', errorData.error);
+                }
+            } catch (error) {
+                directionText.textContent = 'Cannot connect to guide server. Please ensure the Python server is running.';
+                console.error('Fetch error:', error);
+            }
+        }
+
+        async function findMyAddress() {
+            const addressDisplay = document.getElementById('addressDisplay');
+            if (currentLatitude === null || currentLongitude === null) {
+                addressDisplay.textContent = 'Address: Acquiring location...';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiEndpoint}/reverse_geocode`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        latitude: currentLatitude,
+                        longitude: currentLongitude
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addressDisplay.textContent = `Address: ${data.address}`;
+                } else {
+                    const errorData = await response.json();
+                    addressDisplay.textContent = `Address: Error finding address.`;
+                    console.error('Server error:', errorData.error);
+                }
+            } catch (error) {
+                addressDisplay.textContent = `Address: Server connection error.`;
+                console.error('Fetch error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', getGeolocation);
+    </script>
+</body>
+</html>
