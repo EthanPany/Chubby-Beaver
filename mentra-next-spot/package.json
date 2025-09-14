@@ -1,24 +1,17 @@
 {
-  "name": "mentra-next-spot",
+  "name": "mentra-simple",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "tsx src/server.ts"
+    "dev:simple": "tsx watch server.simple.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@mentra/sdk": "^2.1.22",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "openai": "^4.104.0"
   },
-  "description": "",
   "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.3.3",
-    "tsx": "^4.20.5"
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   }
 }
