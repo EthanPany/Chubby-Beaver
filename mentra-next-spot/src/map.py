@@ -8,6 +8,7 @@ import math
 app = Flask(__name__)
 CORS(app)
 
+# MUST RUN FIRST TO SET OF FLASK
 # Use a dictionary to store the campus points of interest (POIs)
 # These are fixed locations on your campus map.
 CAMPUS_POIS = {
@@ -19,7 +20,7 @@ CAMPUS_POIS = {
 
 # Use your actual API key here.
 # Make sure the Geocoding API and Directions API are enabled in your Google Cloud Console.
-gmaps_api_key = "put api"
+gmaps_api_key = "AIzaSyCcQZWZFnzfRwvumev4mrfJB9F8KfPbHUQ"
 gmaps = googlemaps.Client(key=gmaps_api_key)
 
 def calculate_bearing(lat1, lon1, lat2, lon2):

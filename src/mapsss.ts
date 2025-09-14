@@ -1,11 +1,12 @@
 // WARNING: This code exposes your API key and is not recommended for production.
 // It is a security vulnerability because anyone can view your key in the source code.
 
-const GOOGLE_API_KEY = ""; // <-- THIS IS A SECURITY VULNERABILITY
+
 
 const DIRECTIONS_API_URL = "https://maps.googleapis.com/maps/api/directions/json";
 const GEOCODE_API_URL = "https://maps.googleapis.com/maps/api/geocode/json";
-
+const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKAGE_NAME is not set in .env file'); })();
+const GOOGLE_API_KEY = process.env.GOOGLEAPI; // <-- THIS IS A SECURITY VULNERABILITY
 const CAMPUS_POIS = {
   "library": { latitude: 42.3653, longitude: -71.0906 },
   "cafe": { latitude: 42.3622, longitude: -71.0898 },

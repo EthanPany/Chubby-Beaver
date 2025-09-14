@@ -1,4 +1,4 @@
-import { getDirections, reverseGeocode, geocode } from './mapsss';
+import { getDirections, reverseGeocode, geocode } from '../../src/mapsss';
 
 async function runTests() {
     // You must replace 'YOUR_API_KEY_HERE' in maps.ts with a valid Google Maps API key

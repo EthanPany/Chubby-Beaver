@@ -2,6 +2,7 @@ import { ToolCall, AppServer, AppSession } from '@mentra/sdk';
 import path from 'path';
 import { setupExpressRoutes } from './webview';
 import { handleToolCall } from './tools';
+import { getDirections, geocode, reverseGeocode} from './mapsss'
 
 const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKAGE_NAME is not set in .env file'); })();
 const MENTRAOS_API_KEY = process.env.MENTRAOS_API_KEY ?? (() => { throw new Error('MENTRAOS_API_KEY is not set in .env file'); })();
@@ -54,7 +55,14 @@ class ExampleMentraOSApp extends AppServer {
       if (showLiveTranscription) {
         console.log("Transcript received:", text);
         session.layouts.showTextWall("You said: " + text);
+        const location = session.location.subscribeToStream({ accuracy: 'high' }, (data) => {
+          console.log(`location: ${data.lat}, ${data.lng}`);
+          // Update location-based features
+          session.layouts.showTextWall(`New location: ${data.lat}, ${data.lng}`);
+        });
       }
+      
+
     };
 
     // Listen for transcriptions
@@ -64,6 +72,7 @@ class ExampleMentraOSApp extends AppServer {
         displayTranscription(data.text);
       }
     });
+
 
     // Listen for setting changes to update transcription display behavior
     session.settings.onValueChange(
