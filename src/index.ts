@@ -53,10 +53,12 @@ class ExampleMentraOSApp extends AppServer {
       const place = "Great Dome"
       const curr = reverseGeocode(data.lat, data.lng)
       curr.then(name => session.layouts.showTextWall(`You are currently at ${name}`))
+      curr.then(name => console.log(`You are currently at ${name}`))
 
       const dir = getDirections(data.lat, data.lng, place);
       //session.layouts.showTextWall(`location: ${data.lat}, ${data.lng}`);
       dir.then(name => session.layouts.showTextWall(`Going to ${place}, Directions: ${name}`))
+      dir.then(name => console.log(`Going to ${place}, Directions: ${name}`))
       //session.layouts.showTextWall(`location: ${data.lat}, ${data.lng}`);
     });
 
