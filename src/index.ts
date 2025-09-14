@@ -2,7 +2,6 @@ import { ToolCall, AppServer, AppSession } from '@mentra/sdk';
 import path from 'path';
 import { setupExpressRoutes } from './webview';
 import { handleToolCall } from './tools';
-import { getDirections, geocode, reverseGeocode} from './mapsss'
 
 const PACKAGE_NAME = process.env.PACKAGE_NAME ?? (() => { throw new Error('PACKAGE_NAME is not set in .env file'); })();
 const MENTRAOS_API_KEY = process.env.MENTRAOS_API_KEY ?? (() => { throw new Error('MENTRAOS_API_KEY is not set in .env file'); })();
@@ -46,14 +45,6 @@ class ExampleMentraOSApp extends AppServer {
     // Show welcome message
     session.layouts.showTextWall("Example App loaded!");
 
-    // Subscribe to location updates using the events manager
-    session.events.onLocation((data) => {
-      console.log(`location: ${data.lat}, ${data.lng}`);
-      // Update location-based features
-      session.layouts.showTextWall(`New location: ${data.lat}, ${data.lng}`);
-    });
-
-
     /**
      * Handles transcription display based on settings
      * @param text - The transcription text to display
@@ -73,7 +64,6 @@ class ExampleMentraOSApp extends AppServer {
         displayTranscription(data.text);
       }
     });
-
 
     // Listen for setting changes to update transcription display behavior
     session.settings.onValueChange(
