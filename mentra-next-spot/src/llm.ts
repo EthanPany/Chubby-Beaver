@@ -1,5 +1,12 @@
-cat > src/llm.ts <<'TS'
+
 type NextSpot = { name: string; reason?: string; lat?: number; lng?: number; place_id?: string };
+
+export async function recommendPlace(userText: string): Promise<{
+  name: string;
+  lat: number;
+  lng: number;
+  address?: string;
+}>;
 
 export async function getNextSpot(origin: { lat: number; lng: number }): Promise<NextSpot> {
   const sys = `You are a trip assistant. Return ONE nearby place within ~2km of (${origin.lat},${origin.lng}).
@@ -32,5 +39,4 @@ Return strict JSON with fields: name, reason, and either (lat,lng) or place_id. 
     return { name: "Nearby Coffee", reason: "close & cozy", lat: origin.lat + 0.001, lng: origin.lng + 0.001 };
   }
 }
-TS
 

@@ -1,5 +1,3 @@
-mkdir -p src
-cat > src/state.ts <<'TS'
 export type Phase = 'IDLE' | 'AWAIT_CONFIRM';
 
 export interface Suggestion {
@@ -26,5 +24,4 @@ export function getState(sessionId: string): SessionState {
 export function reset(sessionId: string) {
   store.set(sessionId, { phase: 'IDLE' });
 }
-TS
 

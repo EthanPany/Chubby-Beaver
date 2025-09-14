@@ -1,4 +1,13 @@
-cat > src/maps.ts <<'TS'
+export async function routeTo(args: {
+  lat: number;
+  lng: number;
+  mode?: "walking" | "driving" | "transit" | "bicycling";
+}): Promise<{
+  etaMinutes?: number;   
+  distanceKm?: number;    
+  polyline?: string;      
+}>;
+
 export async function resolvePlaceIfNeeded(
   s: { name: string; lat?: number; lng?: number; place_id?: string },
   origin: { lat: number; lng: number }
@@ -38,5 +47,4 @@ export async function getDirections(
 
   return { eta, firstStep };
 }
-TS
 
